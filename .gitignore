@@ -1,3 +1,8 @@
-# secrets
+# Sensitive data
 vault/
 .env
+
+# Terraform files
+**/.terraform/*
+*.tfstate
+*.tfstate.*
