@@ -25,3 +25,5 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN apt-get purge -y curl unzip
 
 WORKDIR /home/host
+
+CMD ["/bin/bash"]
