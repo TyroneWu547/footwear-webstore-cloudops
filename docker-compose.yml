@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+    config-srv:
+        build: .
+        volumes:
+            - .:/home/host
+        env_file: 
+            - .env
+        stdin_open: true
+        tty: true
+        command: /bin/bash
