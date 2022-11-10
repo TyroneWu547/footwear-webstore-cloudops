@@ -29,7 +29,20 @@ resource "aws_security_group" "ssh_access" {
     }
 }
 
-# EC2 Instance: control_node
+# EC2 Instance: database server
+resource "aws_instance" "database_server" {
+    ami = "ami-01d08089481510ba2"           # https://cloud-images.ubuntu.com/locator/ec2/ : us-east-1 Ubuntu 20.04
+    instance_type = "t2.micro"
+    key_name = aws_key_pair.ssh_key_pair.key_name
+    vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
+
+    tags = {
+        Name = "database_server"
+        Description = "Database server"
+    }
+}
+
+# EC2 Instance: control node
 resource "aws_instance" "control_node" {
     ami = "ami-01d08089481510ba2"           # https://cloud-images.ubuntu.com/locator/ec2/ : us-east-1 Ubuntu 20.04
     instance_type = "t2.micro"
@@ -48,6 +61,7 @@ resource "local_file" "kube_cluster_hosts" {
     content = templatefile(
         "../ansible/inventory.tftpl", 
         {
+            database_server_ip = aws_instance.database_server.public_ip,
             control_node_ip = aws_instance.control_node.public_ip
         }
     )

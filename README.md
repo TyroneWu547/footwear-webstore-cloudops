@@ -38,10 +38,10 @@ First create the configuration environment:
 $ docker build -t footwear-config-srv .
 
 ## Run container
-$ docker run --name config-server-1 -it -d -p 22:22 -v "$(pwd):/home/host" --env-file .env footwear-config-srv
+$ docker run --name footwear-config-srv -it -d -p 22:22 -v "$(pwd):/home/host" --env-file .env footwear-config-srv
 
 # Start terminal session in container
-$ docker exec -it config-server-1 /bin/bash
+$ docker exec -it footwear-config-srv /bin/bash
 ```
 
 Commands for provisioning the cloud infrastructure:  
@@ -77,10 +77,10 @@ $ exit
 Commands for deleting container and image:  
 ```bash
 # Stop container
-$ docker stop config-server-1
+$ docker stop footwear-config-srv
 
 # Delete container
-$ docker rm config-server-1
+$ docker rm footwear-config-srv
 
 # delete image
 $ docker rmi footwear-config-srv
