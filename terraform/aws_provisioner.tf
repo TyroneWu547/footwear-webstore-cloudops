@@ -12,7 +12,7 @@ resource "tls_private_key" "ssh_key_gen" {
 
 # Write key to local pem file
 resource "local_sensitive_file" "key_pem_file" {
-    filename = "./vault/${var.key_name}.pem"
+    filename = "../vault/${var.key_name}.pem"
     content = tls_private_key.ssh_key_gen.private_key_pem
     file_permission = "0400"
 }
@@ -37,7 +37,7 @@ resource "aws_security_group" "ssh_access" {
 
 # Create EC2 instance
 resource "aws_instance" "control_node" {
-    ami = "ami-01d08089481510ba2"           # https://cloud-images.ubuntu.com/locator/ec2/
+    ami = "ami-01d08089481510ba2"           # https://cloud-images.ubuntu.com/locator/ec2/ : us-east-1 Ubuntu 20.04
     instance_type = "t2.micro"
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
@@ -49,6 +49,6 @@ resource "aws_instance" "control_node" {
 }
 
 # Output public IP of the EC2 instance
-output publicip {
+output ec2_public_ip {
     value = aws_instance.control_node.public_ip
 }
