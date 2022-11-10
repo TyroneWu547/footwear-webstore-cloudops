@@ -69,4 +69,19 @@ $ cd /home/host/terraform/
 
 # Destroy provisioned resources
 $ terraform destroy
+
+# Exit container
+$ exit
+```
+
+Commands for deleting container and image:  
+```bash
+# Stop container
+$ docker stop config-server-1
+
+# Delete container
+$ docker rm config-server-1
+
+# delete image
+$ docker rmi footwear-config-srv
 ```
