@@ -1,6 +1,6 @@
 # Sensitive data
 vault/
-.env.development
+.env
 
 # Terraform files
 **/.terraform/*
