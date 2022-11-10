@@ -46,7 +46,7 @@ resource "aws_instance" "control_node" {
 resource "local_file" "kube_cluster_hosts" {
     filename = "../ansible/inventory"
     content = templatefile(
-        "../ansible/inventory.tpl", 
+        "../ansible/inventory.tftpl", 
         {
             control_node_ip = aws_instance.control_node.public_ip
         }
