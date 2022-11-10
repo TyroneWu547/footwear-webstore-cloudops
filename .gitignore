@@ -6,3 +6,6 @@ vault/
 **/.terraform/*
 *.tfstate
 *.tfstate.*
+
+# Ansible files
+ansible/inventory
