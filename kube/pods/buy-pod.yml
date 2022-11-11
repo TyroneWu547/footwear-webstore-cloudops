@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: buy-pod
+  labels:
+    name: buy-pod
+    app: footwear-webstore-app
+spec:
+  containers:
+    - name: buy
+      image: piepielovers/footwear-web:buy
+      ports:
+        - containerPort: 80
+      # resources:
+      #   limits:
+      #     memory: "128Mi"
+      #     cpu: "500m"

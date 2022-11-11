@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: route-pod
+  labels:
+    name: route-pod
+    app: footwear-webstore-app
+spec:
+  containers:
+    - name: route
+      image: piepielovers/footwear-web:route
+      ports:
+        - containerPort: 80
+      # resources:
+      #   limits:
+      #     memory: "128Mi"
+      #     cpu: "500m"

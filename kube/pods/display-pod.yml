@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: display-pod
+  labels:
+    name: display-pod
+    app: footwear-webstore-app
+spec:
+  containers:
+    - name: display
+      image: piepielovers/footwear-web:display
+      ports:
+        - containerPort: 80
+      # resources:
+      #   limits:
+      #     memory: "128Mi"
+      #     cpu: "500m"
