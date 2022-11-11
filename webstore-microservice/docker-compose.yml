@@ -17,8 +17,9 @@ services:
 
     display:
         container_name: display_pod
-        build: 
-            context: ./web
+        image: "piepielovers/footwear-web:latest"
+        # build: 
+        #     context: ./web
         restart: "always"
         volumes:
             - "./web/display:/var/www/html"
@@ -31,8 +32,9 @@ services:
     
     buy:
         container_name: buy_pod
-        build: 
-            context: ./web
+        image: "piepielovers/footwear-web:latest"
+        # build: 
+        #     context: ./web
         restart: "always"
         volumes:
             - "./web/buy:/var/www/html"
@@ -45,8 +47,9 @@ services:
     
     route:
         container_name: route_pod
-        build: 
-            context: ./web
+        image: "piepielovers/footwear-web:latest"
+        # build: 
+        #     context: ./web
         restart: "always"
         volumes:
             - "./web/route:/var/www/html"
