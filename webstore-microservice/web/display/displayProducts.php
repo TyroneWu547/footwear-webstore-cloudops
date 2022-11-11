@@ -1,8 +1,8 @@
 <?php
 
-$servername = "<database-public-IPv4-address>";
+$servername = "database";
 $username = "csc547";
-$password = "csc547cloud";
+$password = "CsCEcE547@Cloud";
 $database = "Products";
 $port = '3306';
 

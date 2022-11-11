@@ -1,2 +1,0 @@
-command for populating database after creation:
-mysql Products < DatabaseSetup.sql --user=csc547 --password=CsCEcE547@Cloud

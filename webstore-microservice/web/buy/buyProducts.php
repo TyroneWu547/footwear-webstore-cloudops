@@ -1,5 +1,5 @@
 <?php
-$servername = "<database-server-IPv4-address>";
+$servername = "database";
 $username = "csc547";
 $password = "CsCEcE547@Cloud";
 $database = "Products";
