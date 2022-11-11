@@ -1,7 +1,7 @@
 <?php
 $servername = "database";
 $username = "csc547";
-$password = "CsCEcE547@Cloud";
+$password = "csc547cloud";
 $database = "Products";
 $port = '3306';
 
