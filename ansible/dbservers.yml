@@ -1,0 +1,36 @@
+---
+- name: Setup database
+  hosts: db-node
+  become: true
+
+  vars:
+    packages:
+      - mariadb-server
+      - python3-pymysql
+    MYSQL_ROOT_PASSWORD: "CsCEcE547@Cloud"
+    MYSQL_DATABASE: "Products"
+    MYSQL_USER: "csc547"
+    MYSQL_PASSWORD: "CsCEcE547@Cloud"
+
+  tasks:
+    - name: Install mariadb apt_repository
+      apt_repository:
+        repo: "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.0/ubuntu trusty main"
+        state: present
+      
+    - name: Add repository key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 0xcbcb082a1bb943db
+    
+    - name: Install mariadb
+      apt:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+    
+    - name: Start mariadb
+      service:
+        name: mariadb
+        state: started
+
