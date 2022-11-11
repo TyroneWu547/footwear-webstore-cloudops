@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: buy-service
+  labels:
+    name: buy-service
+    app: footwear-webstore-app
+spec:
+  selector:
+    name: buy-pod
+    app: footwear-webstore-app
+  ports:
+  - port: 80
+    targetPort: 80
