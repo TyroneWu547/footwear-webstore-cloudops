@@ -51,12 +51,10 @@ services:
         volumes:
             - "./web/route:/var/www/html"
         depends_on: 
-            - database
             - display
             - buy
         ports:
             - "8080:80"
         links:
-            - database
             - display
             - buy
