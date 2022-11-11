@@ -31,8 +31,8 @@ resource "aws_security_group" "ssh_access" {
 
 # EC2 Instance: database server
 resource "aws_instance" "database_server" {
-    ami = "ami-01d08089481510ba2"           # https://cloud-images.ubuntu.com/locator/ec2/ : us-east-1 Ubuntu 20.04
-    instance_type = "t2.micro"
+    ami = var.db_ec2.ami_type
+    instance_type = var.db_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
 
@@ -44,8 +44,8 @@ resource "aws_instance" "database_server" {
 
 # EC2 Instance: control node
 resource "aws_instance" "control_node" {
-    ami = "ami-01d08089481510ba2"           # https://cloud-images.ubuntu.com/locator/ec2/ : us-east-1 Ubuntu 20.04
-    instance_type = "t2.micro"
+    ami = var.control_node_ec2.ami_type
+    instance_type = var.control_node_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
 
@@ -55,14 +55,30 @@ resource "aws_instance" "control_node" {
     }
 }
 
-# Generate inventory file for kube cluster
+# EC2 Instance: worker nodes
+resource "aws_instance" "worker_nodes" {
+    ami = var.worker_nodes_ec2.ami_type
+    instance_type = var.worker_nodes_ec2.instance_type
+    key_name = aws_key_pair.ssh_key_pair.key_name
+    vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
+
+    count = var.worker_nodes_ec2.instance_count
+
+    tags = {
+        Name = "worker_node"
+        Description = "Kubernetes worker nodes"
+    }
+}
+
+# Generate inventory file for Ansible of the cluster
 resource "local_file" "kube_cluster_hosts" {
     filename = "../ansible/inventory"
     content = templatefile(
         "../ansible/inventory.tftpl", 
         {
             database_server_ip = aws_instance.database_server.public_ip,
-            control_node_ip = aws_instance.control_node.public_ip
+            control_node_ip = aws_instance.control_node.public_ip,
+            worker_nodes_ip = aws_instance.control_node.*.public_ip
         }
     )
 }
