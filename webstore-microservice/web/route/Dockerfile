@@ -5,10 +5,10 @@ ADD https://raw.github.ncsu.edu/rrangar/AWS_aaS/main/5%20Microservices%20Route%2
 
 RUN chmod -R 755 /var/www/html/
 
-RUN sed -i "s/<display-server-IPv4-address>/localhost/g" /var/www/html/products.php
-RUN sed -i "s/<buy-server-IPv4-address>/localhost/g" /var/www/html/products.php
-RUN sed -i "s/\/displayProducts\.php/:80\/displayProducts\.php/g" /var/www/html/products.php
-RUN sed -i "s/\/buyProducts\.php/:80\/buyProducts\.php/g" /var/www/html/products.php
+RUN sed -i '/^$displayProductsMicroService /s/=.*$/= $_ENV["DISPLAY_SERVICE_SERVICE_HOST"];/' /var/www/html/products.php && \
+    sed -i '/^$buyProductsMicroService /s/=.*$/= $_ENV["BUY_SERVICE_SERVICE_HOST"];/' /var/www/html/products.php && \
+    sed -i "s/\/displayProducts\.php/:80\/displayProducts\.php/g" /var/www/html/products.php && \
+    sed -i "s/\/buyProducts\.php/:80\/buyProducts\.php/g" /var/www/html/products.php
 
 RUN docker-php-ext-install mysqli
 
