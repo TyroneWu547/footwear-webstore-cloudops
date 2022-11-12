@@ -1,7 +1,7 @@
 <p>Footwear Webstore - Microservices</p>
 <?php
-$displayProductsMicroService = "172.29.0.4";    # Use Docker IP
-$buyProductsMicroService = "172.29.0.3";        # Use Docker IP
+$displayProductsMicroService = "<display-server-IPv4-address>";
+$buyProductsMicroService = "<buy-server-IPv4-address>";
 $action = 'view';
 if (isset($_GET['action']))
 {
