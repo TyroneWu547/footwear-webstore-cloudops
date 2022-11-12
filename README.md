@@ -56,9 +56,19 @@ $ terraform init
 $ terraform apply
 ```
 
+TODO: have ansible install docker for container runtime and production grade kubernetes (minikube on single node if lazy). Then kubectl create -f files in kube directory.   
+
+[k3s](https://github.com/alexellis/k3sup#whats-this-for-) vs [microk8s](https://microk8s.io/)
+
+min hardware reqs for kubernetes:  
+- 2 GB or more RAM per machine
+- 2 CPUs or more
+
+Will need to research AMI for ec2.  
+
 To SSH into an EC2 instance, run the following command:  
 ```bash
-# SSH into the controle node
+# SSH into the control node
 $ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw control_node_ip)
 
 # SSH into the database server
