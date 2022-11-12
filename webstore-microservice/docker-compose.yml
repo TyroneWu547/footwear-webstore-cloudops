@@ -1,5 +1,7 @@
-version: "3.7"
+# Used as a proof of concept to get app running as a multicontainer application before moving onto kubernetes.
+# Probably doesn't work anymore, moved onto kube. 
 
+version: "3.7"
 services:
     database:
         container_name: db_pod
