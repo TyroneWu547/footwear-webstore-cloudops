@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
     - name: mariadb
-      image: mariadb
+      image: piepielovers/footwear-web:mariadb
       ports:
         - containerPort: 3306
       env:
