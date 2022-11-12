@@ -56,10 +56,13 @@ $ terraform init
 $ terraform apply
 ```
 
-To SSH into the EC2 instance, run the following command:  
+To SSH into an EC2 instance, run the following command:  
 ```bash
-# SSH into the EC2 instance
-$ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw ec2_public_ip)
+# SSH into the controle node
+$ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw control_node_ip)
+
+# SSH into the database server
+$ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw database_server_ip)
 ```
 
 When finished, run the following command to tear down infrastructure:  
