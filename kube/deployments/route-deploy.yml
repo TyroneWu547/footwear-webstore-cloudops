@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: route-deploy
+  labels:
+    name: route-deploy
+    app: footwear-webstore-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: route-pod
+      app: footwear-webstore-app
+  template:
+    metadata:
+      name: route-pod
+      labels:
+        name: route-pod
+        app: footwear-webstore-app
+    spec:
+      containers:
+        - name: route
+          image: piepielovers/footwear-web:route
+          ports:
+            - containerPort: 80
+          # resources:
+          #   limits:
+          #     memory: "128Mi"
+          #     cpu: "500m"

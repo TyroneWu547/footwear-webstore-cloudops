@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: display-deploy
+  labels:
+    name: display-deploy
+    app: footwear-webstore-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: display-pod
+      app: footwear-webstore-app
+  template:
+    metadata:
+      name: display-pod
+      labels:
+        name: display-pod
+        app: footwear-webstore-app
+    spec:
+      containers:
+        - name: display
+          image: piepielovers/footwear-web:display
+          ports:
+            - containerPort: 80
+          # resources:
+          #   limits:
+          #     memory: "128Mi"
+          #     cpu: "500m"

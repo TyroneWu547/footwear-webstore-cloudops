@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buy-deploy
+  labels:
+    name: buy-deploy
+    app: footwear-webstore-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: buy-pod
+      app: footwear-webstore-app
+  template:
+    metadata:
+      name: buy-pod
+      labels:
+        name: buy-pod
+        app: footwear-webstore-app
+    spec:
+      containers:
+        - name: buy
+          image: piepielovers/footwear-web:buy
+          ports:
+            - containerPort: 80
+          # resources:
+          #   limits:
+          #     memory: "128Mi"
+          #     cpu: "500m"

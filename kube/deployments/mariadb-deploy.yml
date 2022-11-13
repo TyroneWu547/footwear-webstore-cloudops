@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-deploy
+  labels:
+    name: mariadb-deploy
+    app: footwear-webstore-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mariadb-pod
+      app: footwear-webstore-app
+  template:
+    metadata:
+      name: mariadb-pod
+      labels:
+        name: mariadb-pod
+        app: footwear-webstore-app
+    spec:
+      containers:
+        - name: mariadb
+          image: piepielovers/footwear-web:mariadb
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "csc547cloud"
+            - name: MYSQL_DATABASE
+              value: "Products"
+            - name: MYSQL_USER
+              value: "csc547"
+            - name: MYSQL_PASSWORD
+              value: "csc547cloud"
+          # resources:
+          #   limits:
+          #     memory: "128Mi"
+          #     cpu: "500m"
