@@ -2,10 +2,13 @@
 vault/
 .env
 
-# Terraform files
+# Terraform
 **/.terraform/*
 *.tfstate
 *.tfstate.*
 
-# Ansible files
+# Ansible
 ansible/inventory
+
+# VSCode
+footwear-webstore-cloudops.code-workspace
