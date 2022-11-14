@@ -7,11 +7,12 @@ metadata:
     app: footwear-webstore-app
 spec:
   containers:
-    - name: buy
-      image: piepielovers/footwear-web:buy
-      ports:
-        - containerPort: 80
-      # resources:
-      #   limits:
-      #     memory: "128Mi"
-      #     cpu: "500m"
+  - name: buy
+    imagePullPolicy: Always
+    image: piepielovers/footwear-web:buy
+    ports:
+      - containerPort: 80
+    # resources:
+    #   limits:
+    #     memory: "128Mi"
+    #     cpu: "500m"

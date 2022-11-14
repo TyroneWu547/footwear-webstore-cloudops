@@ -7,11 +7,12 @@ metadata:
     app: footwear-webstore-app
 spec:
   containers:
-    - name: route
-      image: piepielovers/footwear-web:route
-      ports:
-        - containerPort: 80
-      # resources:
-      #   limits:
-      #     memory: "128Mi"
-      #     cpu: "500m"
+  - name: route
+    imagePullPolicy: Always
+    image: piepielovers/footwear-web:route
+    ports:
+      - containerPort: 80
+    # resources:
+    #   limits:
+    #     memory: "128Mi"
+    #     cpu: "500m"
