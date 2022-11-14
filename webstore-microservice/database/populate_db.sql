@@ -1,5 +1,3 @@
-FLUSH PRIVILEGES;
-GRANT ALL PRIVILEGES ON *.* TO 'csc547'@'%';
 USE Products;
 CREATE OR REPLACE TABLE Orders (ItemID bigint(20) unsigned, CustomerEmail varchar(1024), Quantity int(10) unsigned);
 CREATE OR REPLACE TABLE Footwear (ItemID bigint(20) unsigned, Name varchar(1024), Description text, Cost decimal);
