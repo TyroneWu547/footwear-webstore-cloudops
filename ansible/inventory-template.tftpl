@@ -1,0 +1,7 @@
+[control-node]
+${control_node_ip}
+
+[worker-nodes]
+%{ for ip in worker_nodes_ip ~}
+${ip}
+%{ endfor ~}
