@@ -5,3 +5,7 @@ ${control_node_ip}
 %{ for ip in worker_nodes_ip ~}
 ${ip}
 %{ endfor ~}
+
+[node:children]
+control-node
+worker-nodes
