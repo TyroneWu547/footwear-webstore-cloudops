@@ -29,18 +29,18 @@ resource "aws_security_group" "ssh_access" {
     }
 }
 
-# EC2 Instance: database server
-resource "aws_instance" "database_server" {
-    ami = var.db_ec2.ami_type
-    instance_type = var.db_ec2.instance_type
-    key_name = aws_key_pair.ssh_key_pair.key_name
-    vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
+# # EC2 Instance: database server
+# resource "aws_instance" "database_server" {
+#     ami = var.db_ec2.ami_type
+#     instance_type = var.db_ec2.instance_type
+#     key_name = aws_key_pair.ssh_key_pair.key_name
+#     vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
 
-    tags = {
-        Name = "database_server"
-        Description = "Database server"
-    }
-}
+#     tags = {
+#         Name = "database_server"
+#         Description = "Database server"
+#     }
+# }
 
 # EC2 Instance: control node
 resource "aws_instance" "control_node" {
@@ -76,7 +76,7 @@ resource "local_file" "kube_cluster_hosts" {
     content = templatefile(
         "../ansible/inventory.tftpl", 
         {
-            database_server_ip = aws_instance.database_server.public_ip,
+            # database_server_ip = aws_instance.database_server.public_ip,
             control_node_ip = aws_instance.control_node.public_ip,
             worker_nodes_ip = aws_instance.control_node.*.public_ip
         }
