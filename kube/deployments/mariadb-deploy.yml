@@ -19,20 +19,21 @@ spec:
         app: footwear-webstore-app
     spec:
       containers:
-        - name: mariadb
-          image: piepielovers/footwear-web:mariadb
-          ports:
-            - containerPort: 3306
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: "csc547cloud"
-            - name: MYSQL_DATABASE
-              value: "Products"
-            - name: MYSQL_USER
-              value: "csc547"
-            - name: MYSQL_PASSWORD
-              value: "csc547cloud"
-          # resources:
-          #   limits:
-          #     memory: "128Mi"
-          #     cpu: "500m"
+      - name: mariadb
+        imagePullPolicy: Always
+        image: piepielovers/footwear-web:mariadb
+        ports:
+          - containerPort: 3306
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: csc547cloud
+          - name: MYSQL_DATABASE
+            value: Products
+          - name: MYSQL_USER
+            value: csc547
+          - name: MYSQL_PASSWORD
+            value: csc547cloud
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"

@@ -19,11 +19,12 @@ spec:
         app: footwear-webstore-app
     spec:
       containers:
-        - name: display
-          image: piepielovers/footwear-web:display
-          ports:
-            - containerPort: 80
-          # resources:
-          #   limits:
-          #     memory: "128Mi"
-          #     cpu: "500m"
+      - name: display
+        imagePullPolicy: Always
+        image: piepielovers/footwear-web:display
+        ports:
+          - containerPort: 80
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
