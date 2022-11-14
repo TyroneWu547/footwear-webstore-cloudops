@@ -1,8 +1,22 @@
 # 👟 Footwear Webstore CloudOps  
 
+# TODO  
+
+have ansible install on instance:  
+- docker for container runtime
+- production grade kubernetes
+  - [k3s](https://github.com/alexellis/k3sup#whats-this-for-) or [microk8s](https://microk8s.io/)
+  - min hardware reqs for kubernetes:  
+    - 4 GB or more RAM per machine
+    - 2 CPUs or more
+
+if have time change 
+
+Will need to research AMI for ec2.  
+
 -----
 
-### 🚧 Prerequisites  
+## 🚧 Prerequisites  
 
 Ensure Git is installed to clone repo...  
 
@@ -30,7 +44,7 @@ footwear-webstore-cloudops/
 
 -----
 
-### 💻 How to Run  
+## 💻 How to Run  
 
 First create the configuration environment:  
 ```bash
@@ -56,16 +70,6 @@ $ terraform init
 $ terraform apply
 ```
 
-TODO: have ansible install docker for container runtime and production grade kubernetes (minikube on single node if lazy). Then kubectl create -f files in kube directory.   
-
-[k3s](https://github.com/alexellis/k3sup#whats-this-for-) vs [microk8s](https://microk8s.io/)
-
-min hardware reqs for kubernetes:  
-- 2 GB or more RAM per machine
-- 2 CPUs or more
-
-Will need to research AMI for ec2.  
-
 To SSH into an EC2 instance, run the following command:  
 ```bash
 # SSH into the control node
@@ -75,7 +79,9 @@ $ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw control_node_ip
 $ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw database_server_ip)
 ```
 
-When finished, run the following command to tear down infrastructure:  
+## 🧹 When Finished...  
+
+Run the following command to tear down the resources:  
 ```bash
 # Change to terraform directory
 $ cd /home/host/terraform/
