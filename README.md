@@ -46,7 +46,7 @@ footwear-webstore-cloudops/
 
 ## 💻 How to Run  
 
-First create the configuration environment:  
+First create your configuration environment:  
 ```bash
 # Build image
 $ docker build -t footwear-config-srv .
@@ -68,6 +68,11 @@ $ terraform init
 
 # Apply terraform plan
 $ terraform apply
+```
+
+Commands for setting up kube cluster:  
+```bash
+
 ```
 
 To SSH into an EC2 instance, run the following command:  
