@@ -17,16 +17,41 @@ resource "aws_key_pair" "ssh_key_pair" {
     public_key = tls_private_key.ssh_key_gen.public_key_openssh
 }
 
-# Create security group to allow SSH access to EC2 instances
-resource "aws_security_group" "ssh_access" {
-    name = "ssh-access"
-    description = "Allow SSH access from Internet"
+# Inbound rule to allow SSH access to EC2 instances
+resource "aws_security_group" "ssh_http_https_access" {
+    name = "ssh-http-https-access"
+    description = "Basic in/out rules for EC2 instances"
+
     ingress {
+        description = "Inbound rule for SSH"
         from_port = 22
         to_port = 22
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    egress {
+        description = "Outbound rule for traffic to internet"
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr = ["0.0.0.0/0"]
+    }
+
+    # egress {
+    #     description = "Outbound rule for HTTP"
+    #     from_port = 80
+    #     to_port = 80
+    #     protocol = "tcp"
+    #     cidr_blocks = ["0.0.0.0/0"]
+    # }
+    # egress {
+    #     description = "Outbound rule for HTTPS"
+    #     from_port = 443
+    #     to_port = 443
+    #     protocol = "tcp"
+    #     cidr_blocks = ["0.0.0.0/0"]
+    # }
 }
 
 # # EC2 Instance: database server
@@ -34,7 +59,7 @@ resource "aws_security_group" "ssh_access" {
 #     ami = var.db_ec2.ami_type
 #     instance_type = var.db_ec2.instance_type
 #     key_name = aws_key_pair.ssh_key_pair.key_name
-#     vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
+#     vpc_security_group_ids = [ aws_security_group.ssh_http_https_access.id ]
 
 #     tags = {
 #         Name = "database_server"
@@ -47,7 +72,9 @@ resource "aws_instance" "control_node" {
     ami = var.control_node_ec2.ami_type
     instance_type = var.control_node_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
-    vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
+    vpc_security_group_ids = [ 
+        aws_security_group.ssh_http_https_access.id 
+    ]
 
     tags = {
         Name = "control_node"
@@ -60,7 +87,7 @@ resource "aws_instance" "control_node" {
 #     ami = var.worker_nodes_ec2.ami_type
 #     instance_type = var.worker_nodes_ec2.instance_type
 #     key_name = aws_key_pair.ssh_key_pair.key_name
-#     vpc_security_group_ids = [ aws_security_group.ssh_access.id ]
+#     vpc_security_group_ids = [ aws_security_group.ssh_http_https_access.id ]
 
 #     count = var.worker_nodes_ec2.instance_count
 
