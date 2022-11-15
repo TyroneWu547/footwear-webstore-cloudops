@@ -31,11 +31,11 @@ resource "aws_security_group" "ssh_http_https_access" {
     }
 
     egress {
-        description = "Outbound rule for traffic to internet"
+        description = "Outbound rule for internet"
         from_port = 0
         to_port = 0
         protocol = "-1"
-        cidr = ["0.0.0.0/0"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     # egress {
