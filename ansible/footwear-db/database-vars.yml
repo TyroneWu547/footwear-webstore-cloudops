@@ -1,0 +1,17 @@
+# Packages for mysql
+pkgs: 
+  - mysql-server
+  - mysql-client
+  - python3-mysqldb
+  - libmysqlclient-dev
+
+# Mysql user credentials
+mysql_info: 
+  username: csc547
+  password: csc547cloud
+  database: Products
+
+# Setup script that populates the database
+mysql_init_script: 
+  url: https://raw.githubusercontent.com/TyroneWu547/footwear-webstore-cloudops/main/webstore-microservice/database
+  file: populate_db.sql

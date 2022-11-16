@@ -1,0 +1,52 @@
+---
+- name: Setup Kubernetes Cluster
+  hosts: database_server
+  gather_facts: false
+  vars_files:
+    - database-vars.yml
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    - name: Install mysql
+      apt:
+        name: "{{ pkgs }}"
+        state: present
+    
+    - name: Ensure mysql is started and enabled
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Create mysql user with privileges
+      mysql_user:
+        name: "{{ mysql_info.username }}"
+        password: "{{ mysql_info.password }}"
+        priv: '*.*:ALL,GRANT'
+        host: '%'
+        state: present
+    
+    - name: Download sql script
+      get_url:
+        url: "{{ mysql_init_script.url }}/{{ mysql_init_script.file }}"
+        dest: /tmp/
+        mode: 0775
+    
+    - name: Create database
+      mysql_db:
+        name: "{{ mysql_info.database }}"
+        state: present
+
+    - name: Populate database
+      mysql_db:
+        name: all
+        state: import
+        target: /tmp/{{ mysql_init_script.file }}
+    
+    - name: Remove sql script
+      file:
+        state: absent
+        path: /tmp/{{ mysql_init_script.file }}
