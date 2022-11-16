@@ -99,9 +99,9 @@ resource "aws_instance" "control_node" {
 
 # Generate inventory file for Ansible of the cluster
 resource "local_file" "kube_cluster_hosts" {
-    filename = "../ansible/inventory"
+    filename = "../ansible/inventory/inventory"
     content = templatefile(
-        "../ansible/inventory.tftpl", 
+        "../ansible/inventory/inventory.tftpl", 
         {
             # database_server_ip = aws_instance.database_server.public_ip,
             control_node_ip = aws_instance.control_node.public_ip,
