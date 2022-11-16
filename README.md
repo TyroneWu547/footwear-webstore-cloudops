@@ -66,21 +66,30 @@ $ cd /home/host/terraform/
 # Download terraform plugins
 $ terraform init
 
+# Plan terraform resources
+$ terraform plan
+
 # Apply terraform plan
-$ terraform apply
+$ terraform apply -auto-approve
 ```
 
 Commands for setting up kube cluster:  
 ```bash
+# First may need to set correct permissions to directory
+$ chmod -R 755 /home/host/ansible/
 
+# Run ansible playbook
+$ soon... 
 ```
 
 To SSH into an EC2 instance, run the following command:  
 ```bash
 # SSH into the control node
+$ cd /home/host/terraform
 $ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw control_node_ip)
 
-# SSH into the database server
+# SSH into the db server
+$ cd /home/host/terraform
 $ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw database_server_ip)
 ```
 
