@@ -7,7 +7,6 @@ metadata:
     app: footwear-webstore-app
 spec:
   selector:
-    name: mariadb-pod
     app: footwear-webstore-app
   type: ClusterIP
   ports:
@@ -15,4 +14,4 @@ spec:
     port: 3306
     targetPort: 3306
   externalIPs:
-    - $DB_SERVER_IP
+  - $DB_SERVER_IP
