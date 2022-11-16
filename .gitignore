@@ -8,7 +8,7 @@ vault/
 *.tfstate.*
 
 # Ansible
-ansible/inventory
+ansible/inventory/inventory
 
 # VSCode
 footwear-webstore-cloudops.code-workspace
