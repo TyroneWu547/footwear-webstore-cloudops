@@ -10,9 +10,13 @@ ${ip}
 %{ endfor ~}
 
 [multinode_cluster:children]
-control-node
-worker-nodes
+control_node
+worker_nodes
 
-[multinode_cluster:vars]
+[footwear_infra:children]
+database_server
+multinode_cluster
+
+[footwear_infra:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 ansible_ssh_private_key_file=/home/host/vault/ec2-ssh-key.pem
