@@ -16,7 +16,7 @@ variable "db_ec2" {
 
     default = {
         ami_type = "ami-01d08089481510ba2"          # us-east-1, Ubuntu 20.04
-        instance_type = "t2.medium"
+        instance_type = "t3.medium"
     }
     description = "EC2 instance type for DB server"
 }
@@ -29,7 +29,7 @@ variable "control_node_ec2" {
 
     default = {
         ami_type = "ami-01d08089481510ba2"          # us-east-1, Ubuntu 20.04
-        instance_type = "t2.micro"
+        instance_type = "t2.medium"
     }
     description = "EC2 instance type for control node"
 }
