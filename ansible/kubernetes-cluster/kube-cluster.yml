@@ -1,0 +1,47 @@
+---
+- name: Setup Kubernetes Cluster
+  hosts: control_node
+  gather_facts: false
+  vars_files:
+    - kube-vars.yml
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    - name: Install docker
+      apt:
+        name: docker.io
+        state: present
+        
+    - name: Install microk8s
+      snap:
+        name: microk8s
+        state: present
+        classic: yes
+    
+    - name: Add user to docker and microk8s group
+      user:
+        name: ubuntu
+        state: present
+        groups:
+          - docker
+          - microk8s
+    
+    - name: Create directory for manifests
+      file:
+        path: "{{ manifest_dir }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0775
+
+    - name: Download kubernetes manifests
+      get_url:
+        url: "{{ item.url }}/{{ item.file }}"
+        dest: "{{ manifest_dir }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: 0775
+      loop: "{{ manifests }}"

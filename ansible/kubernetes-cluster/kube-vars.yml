@@ -1,0 +1,11 @@
+manifest_dir: /home/ubuntu/manifests
+
+manifests: 
+  - url: https://raw.githubusercontent.com/TyroneWu547/footwear-webstore-cloudops/main/kube/deployments
+    file: route-deploy.yml
+  - url: https://raw.githubusercontent.com/TyroneWu547/footwear-webstore-cloudops/main/kube/deployments
+    file: display-deploy.yml
+  - url: https://raw.githubusercontent.com/TyroneWu547/footwear-webstore-cloudops/main/kube/deployments
+    file: buy-deploy.yml
+
+
