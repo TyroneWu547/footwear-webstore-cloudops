@@ -28,3 +28,20 @@ spec:
         #   limits:
         #     memory: "128Mi"
         #     cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: buy-service
+  labels:
+    name: buy-service
+    app: footwear-webstore-app
+spec:
+  selector:
+    name: buy-pod
+    app: footwear-webstore-app
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
