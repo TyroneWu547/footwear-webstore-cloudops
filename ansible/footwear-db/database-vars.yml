@@ -13,5 +13,5 @@ mysql_info:
 
 # Setup script that populates the database
 mysql_init_script: 
-  url: https://raw.githubusercontent.com/TyroneWu547/footwear-webstore-cloudops/main/webstore-microservice/database
+  src: /home/host/footwear-microservice/database
   file: populate_db.sql

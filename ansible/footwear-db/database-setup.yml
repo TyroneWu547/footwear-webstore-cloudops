@@ -30,8 +30,8 @@
         state: present
     
     - name: Download sql script
-      get_url:
-        url: "{{ mysql_init_script.url }}/{{ mysql_init_script.file }}"
+      copy:
+        src: "{{ mysql_init_script.src }}/{{ mysql_init_script.file }}"
         dest: /tmp/
         mode: 0775
     
@@ -39,7 +39,7 @@
       mysql_db:
         name: "{{ mysql_info.database }}"
         state: present
-
+    
     - name: Populate database
       mysql_db:
         name: all
@@ -50,3 +50,18 @@
       file:
         state: absent
         path: /tmp/{{ mysql_init_script.file }}
+    
+    - name: Ensure mysql can be accessed from anywhere
+      lineinfile:
+         path: /etc/mysql/mysql.conf.d/mysqld.cnf
+         regexp: '^bind-address'
+         line: 'bind-address = 0.0.0.0'
+         backup: yes
+      notify:
+         - Restart mysql
+
+  handlers:
+    - name: Restart mysql
+      service:
+        name: mysql
+        state: restarted
