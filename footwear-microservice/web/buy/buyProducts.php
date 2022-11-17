@@ -1,5 +1,5 @@
 <?php
-$servername = "database";
+$servername = $_ENV["EXTERNAL_MARIADB_SERVICE_SERVICE_HOST"];;
 $username = "csc547";
 $password = "csc547cloud";
 $database = "Products";
