@@ -1,5 +1,5 @@
 ---
-- name: Setup Kubernetes Cluster
+- name: Setup MySQL Database
   hosts: database_server
   gather_facts: false
   vars_files:
