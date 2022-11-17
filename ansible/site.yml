@@ -1,4 +1,4 @@
 ---
 - import_playbook: ./footwear-db/database-setup.yml
 
-- import_playbook: ./kubernetes-cluster/kube-cluster.yml
+- import_playbook: ./footwear-web/kube-deployment.yml

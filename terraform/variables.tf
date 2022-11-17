@@ -44,7 +44,7 @@ variable "worker_nodes_ec2" {
     default = {
         instance_count = 1
         ami_type = "ami-01d08089481510ba2"          # us-east-1, Ubuntu 20.04 will change later to map? include different regions
-        instance_type = "t2.micro"
+        instance_type = "t2.small"
     }
     description = "EC2 instance type for worker nodes"
 }
