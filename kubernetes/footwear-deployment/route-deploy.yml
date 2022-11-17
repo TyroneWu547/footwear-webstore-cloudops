@@ -6,7 +6,12 @@ metadata:
     name: route-deploy
     app: footwear-webstore-app
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
       name: route-pod
@@ -20,14 +25,16 @@ spec:
     spec:
       containers:
       - name: route
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent # Always
         image: piepielovers/footwear-web:route
         ports:
           - containerPort: 80
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        resources:
+          requests:
+            cpu: "125m"
+            memory: "256Mi"
+          limits:
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -46,3 +53,28 @@ spec:
     port: 80
     targetPort: 80
     nodePort: 30000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: route-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: route-deploy
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: 179Mi
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
