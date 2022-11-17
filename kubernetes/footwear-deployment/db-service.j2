@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-mariadb-service
+spec:
+  selector: {}
+  ports:
+  - name: mariadb
+    protocol: TCP
+    port: 3306
+    targetPort: 3306
+    nodePort: 0
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: external-mariadb-service
+subsets:
+- addresses:
+  - ip: "{{ groups['database_server'][0] }}"
+  ports:
+  - port: 3306
+    name: mariadb
