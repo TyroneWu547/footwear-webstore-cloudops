@@ -45,12 +45,22 @@
     - name: Copy manifests to node
       copy:
         src: /home/host/kubernetes/footwear-deployment/{{ item }}
-        dest: /home/ubuntu/manifests/
+        dest: "{{ manifest_dir }}"
         mode: 0775
-      loop: "{{ manifests }}"
+      loop: "{{ manifests_to_copy }}"
     
     - name: Copy template file for DB external service definition
       template:
-        src: /home/host/kubernetes/footwear-deployment/db-service.j2
-        dest: /home/ubuntu/manifests/db-service.yml
+        src: /home/host/kubernetes/footwear-deployment/{{ db_manifest.template }}
+        dest: "{{ manifest_dir }}{{ db_manifest.svc }}"
         mode: 0775
+    
+    - name: Enable metrics-server addon for HPA resources
+      command:
+        cmd: "microk8s enable metrics-server"
+    
+    - name: Create kubernetes resources from manifests
+      command:
+        cmd: "microk8s kubectl create -f {{ item  }}"
+        chdir: "{{ manifest_dir }}"
+      loop: "{{ footwear_manifests }}"
