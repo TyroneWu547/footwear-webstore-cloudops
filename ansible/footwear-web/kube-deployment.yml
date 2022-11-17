@@ -29,6 +29,11 @@
           - docker
           - microk8s
     
+    - name: Wait for microk8s to be ready
+      command:
+        cmd: microk8s status --wait-ready
+      changed_when: false
+    
     - name: Create directory for manifests
       file:
         path: "{{ manifest_dir }}"
@@ -37,11 +42,15 @@
         group: ubuntu
         mode: 0775
 
-    - name: Download kubernetes manifests
-      get_url:
-        url: "{{ item.url }}/{{ item.file }}"
-        dest: "{{ manifest_dir }}"
-        owner: ubuntu
-        group: ubuntu
+    - name: Copy manifests to node
+      copy:
+        src: /home/host/kubernetes/footwear-deployment/{{ item }}
+        dest: /home/ubuntu/manifests/
         mode: 0775
       loop: "{{ manifests }}"
+    
+    - name: Copy template file for DB external service definition
+      template:
+        src: /home/host/kubernetes/footwear-deployment/db-service.j2
+        dest: /home/ubuntu/manifests/db-service.yml
+        mode: 0775
