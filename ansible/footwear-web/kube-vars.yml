@@ -1,9 +1,10 @@
 manifest_dir: /home/ubuntu/manifests/
 
 manifests_to_copy: 
-  - route-deploy.yml
-  - display-deploy.yml
-  - buy-deploy.yml
+  - /home/host/kubernetes/footwear-deployment/route-deploy.yml
+  - /home/host/kubernetes/footwear-deployment/display-deploy.yml
+  - /home/host/kubernetes/footwear-deployment/buy-deploy.yml
+  - /home/host/kubernetes/dashboard/nodeport_snippet.yml
 
 db_manifest:
   template: db-external-service.j2

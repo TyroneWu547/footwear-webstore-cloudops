@@ -68,15 +68,23 @@ resource "aws_security_group" "mysql_access" {
     }
 }
 
-# Allow access to 'route' NodePort service
+# Allow access to the exposed NodePort services
 resource "aws_security_group" "nodeport_access" {
     name = "nodeport-access"
-    description = "Open access to NodePort service"
+    description = "Open access to NodePort services"
 
     ingress {
-        description = "Inbound rule for NodePort service"
+        description = "Inbound rule for the Route microservice"
         from_port = 30000
         to_port = 30000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "Inbound rule for the microk8s dashboard"
+        from_port = 31000
+        to_port = 31000
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }

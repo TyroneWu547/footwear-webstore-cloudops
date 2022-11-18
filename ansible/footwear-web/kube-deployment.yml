@@ -44,7 +44,7 @@
 
     - name: Copy manifests to node
       copy:
-        src: /home/host/kubernetes/footwear-deployment/{{ item }}
+        src: "{{ item }}"
         dest: "{{ manifest_dir }}"
         mode: 0775
       loop: "{{ manifests_to_copy }}"
@@ -64,3 +64,27 @@
         cmd: "microk8s kubectl create -f {{ item  }}"
         chdir: "{{ manifest_dir }}"
       loop: "{{ footwear_manifests }}"
+    
+    - name: Enable dashboard addon for kubernetes
+      command:
+        cmd: "microk8s enable dashboard"
+    
+    - name: Register kubernetes dashboard token to variable
+      command: 
+        cmd: "microk8s kubectl create token default"
+      register: dashboard_token
+      changed_when: false
+    
+    - name: Write dashboard token to local file
+      local_action:
+        module: copy
+        content: "{{ dashboard_token.stdout }}"
+        dest: /home/host/vault/dashboard_token.txt
+    
+    - name: Change dashboard service type to nodeport
+      command:
+        cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard -p '{"spec"{{ ":" }} {"type"{{ ":" }} "NodePort"}}'
+
+    - name: Change port to use 31000
+      shell:
+        cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard --patch "$(cat {{ manifest_dir }}nodeport_snippet.yml)"
