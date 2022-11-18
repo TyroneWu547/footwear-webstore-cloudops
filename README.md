@@ -80,14 +80,29 @@ The web application should now be reachable through:
 $ echo http://$(terraform -chdir=/home/host/terraform output -raw control_node_ip):30000/products.php
 
 # URL for the microk8s dashbaord
-# Note: This URL uses HTTPS instead of HTTP. Proceed past the "Your connection is not private" page. Don't worry, it's safe. 
+# Note: This URL uses HTTPS instead of HTTP. 
+#       Proceed past the "Your connection is not private" page. Don't worry, it's safe. 
 $ echo https://$(terraform -chdir=/home/host/terraform output -raw control_node_ip):31000
 ```
+
+For the dashboard login page, copy and paste the token found in `vault/dashboard_token.txt`:  
+```
+footwear-webstore-cloudops/
+   +- ...
+   +- vault/
+   |   +- dashboard_token.txt
+```
+
+<p align="center">
+<img width="450" src="https://github.com/TyroneWu547/footwear-webstore-cloudops/blob/main/docs/dashboard_login.png">
+</p>
 
 For Locust.io:  
 ```bash
 # Run locust
 $ locust -f /home/host/locust/locustfile.py
+
+# The UI can be accessed through `localhost:8089`
 # To exit, hit: ctrl + c
 ```
 
