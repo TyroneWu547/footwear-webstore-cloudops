@@ -10,5 +10,8 @@ vault/
 # Ansible
 ansible/inventory/inventory
 
+# Python
+locust/__pycache__/
+
 # VSCode
 footwear-webstore-cloudops.code-workspace

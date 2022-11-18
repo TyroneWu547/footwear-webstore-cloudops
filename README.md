@@ -1,19 +1,5 @@
 # 👟 Footwear Webstore CloudOps  
 
-# TODO  
-
-have ansible install on instance:  
-- docker for container runtime
-- production grade kubernetes
-  - [k3s](https://github.com/alexellis/k3sup#whats-this-for-) or [microk8s](https://microk8s.io/)
-  - min hardware reqs for kubernetes:  
-    - 4 GB or more RAM per machine
-    - 2 CPUs or more
-
-if have time change 
-
-Will need to research AMI for ec2.  
-
 -----
 
 ## 🚧 Prerequisites  
@@ -52,7 +38,7 @@ First create your configuration environment:
 $ docker build -t footwear-config-srv .
 
 ## Run container
-$ docker run --name footwear-config-srv -it -d -p 22:22 -v "$(pwd):/home/host" --env-file .env footwear-config-srv
+$ docker run --name footwear-config-srv -it -d -p 22:22 -p 8089:8089 -v "$(pwd):/home/host" --env-file .env footwear-config-srv
 
 # Start terminal session in container
 $ docker exec -it footwear-config-srv /bin/bash
@@ -60,48 +46,68 @@ $ docker exec -it footwear-config-srv /bin/bash
 
 Commands for provisioning the cloud infrastructure:  
 ```bash
-# Change to terraform directory
-$ cd /home/host/terraform/
-
 # Download terraform plugins
-$ terraform init
+$ terraform -chdir=/home/host/terraform init
 
 # Plan terraform resources
-$ terraform plan
+$ terraform -chdir=/home/host/terraform plan
 
 # Apply terraform plan
-$ terraform apply -auto-approve
+$ terraform -chdir=/home/host/terraform apply -auto-approve
 ```
 
-Commands for setting up kube cluster:  
+Commands for setting up and deploying the DB Server and Kubernetes Cluster:  
 ```bash
 # First may need to set correct permissions to directory
 $ chmod -R 755 /home/host/ansible/
 
+# Change to ansible directory
+$ cd /home/host/ansible/
+
 # Run ansible playbook
-$ soon... 
+$ ansible-playbook site.yml
+```
+
+🎉 YAY, the application is now deployed!!!! 🎉  
+
+-----  
+
+## 📋 Accessing the Webapplication & Dashboard  
+
+The web application should now be reachable through:  
+```bash
+# URL for the Footwear Webstore applicaiton.
+$ echo http://$(terraform -chdir=/home/host/terraform output -raw control_node_ip):30000/products.php
+
+# URL for the microk8s dashbaord
+# Note: This URL uses HTTPS instead of HTTP. Proceed past the "Your connection is not private" page. Don't worry, it's safe. 
+$ echo https://$(terraform -chdir=/home/host/terraform output -raw control_node_ip):31000
+```
+
+For Locust.io:  
+```bash
+# Run locust
+$ locust -f /home/host/locust/locustfile.py
+# To exit, hit: ctrl + c
 ```
 
 To SSH into an EC2 instance, run the following command:  
 ```bash
 # SSH into the control node
-$ cd /home/host/terraform
-$ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw control_node_ip)
+$ ssh -i /home/host/vault/ec2-ssh-key.pem ubuntu@$(terraform -chdir=/home/host/terraform output -raw control_node_ip)
 
 # SSH into the db server
-$ cd /home/host/terraform
-$ ssh -i ../vault/ec2-ssh-key.pem ubuntu@$(terraform output -raw database_server_ip)
+$ ssh -i /home/host/vault/ec2-ssh-key.pem ubuntu@$(terraform -chdir=/home/host/terraform output -raw database_server_ip)
 ```
+
+-----  
 
 ## 🧹 When Finished...  
 
 Run the following command to tear down the resources:  
 ```bash
-# Change to terraform directory
-$ cd /home/host/terraform/
-
 # Destroy provisioned resources
-$ terraform destroy
+$ terraform -chdir=/home/host/terraform destroy -auto-approve
 
 # Exit container
 $ exit
