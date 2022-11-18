@@ -81,6 +81,7 @@
         content: "{{ dashboard_token.stdout }}"
         dest: /home/host/vault/dashboard_token.txt
     
+    # thanks to who ever created this https://computingforgeeks.com/how-to-install-kubernetes-dashboard-with-nodeport/
     - name: Change dashboard service type to nodeport
       command:
         cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard -p '{"spec"{{ ":" }} {"type"{{ ":" }} "NodePort"}}'
