@@ -1,0 +1,71 @@
+---
+- name: Setup microk8s
+  hosts: multinode_cluster
+  gather_facts: false
+
+  tasks:
+    - name: Install microk8s and prereqs
+      import_tasks: microk8s-setup-tasks.yml
+
+# - name: Setup Kubernetes Cluster
+#   hosts: control_node
+#   gather_facts: false
+#   vars_files:
+#     - vars.yml
+
+#   tasks:
+    # - name: Create directory for manifests
+    #   file:
+    #     path: "{{ manifest_dir }}"
+    #     state: directory
+    #     owner: ubuntu
+    #     group: ubuntu
+    #     mode: 0775
+
+    # - name: Copy manifests to node
+    #   copy:
+    #     src: "{{ item }}"
+    #     dest: "{{ manifest_dir }}"
+    #     mode: 0775
+    #   loop: "{{ manifests_to_copy }}"
+    
+    # - name: Copy template file for DB external service definition
+    #   template:
+    #     src: /home/host/kubernetes/footwear-deployment/{{ db_manifest.template }}
+    #     dest: "{{ manifest_dir }}{{ db_manifest.svc }}"
+    #     mode: 0775
+    
+    # - name: Enable metrics-server addon for HPA resources
+    #   command:
+    #     cmd: "microk8s enable metrics-server"
+    
+    # - name: Create kubernetes resources from manifests
+    #   command:
+    #     cmd: "microk8s kubectl create -f {{ item  }}"
+    #     chdir: "{{ manifest_dir }}"
+    #   loop: "{{ footwear_manifests }}"
+    
+    # - name: Enable dashboard addon for kubernetes
+    #   command:
+    #     cmd: "microk8s enable dashboard"
+    
+    # - name: Register kubernetes dashboard token to variable
+    #   command: 
+    #     cmd: "microk8s kubectl create token default"
+    #   register: dashboard_token
+    #   changed_when: false
+    
+    # - name: Write dashboard token to local file
+    #   local_action:
+    #     module: copy
+    #     content: "{{ dashboard_token.stdout }}"
+    #     dest: /home/host/vault/dashboard_token.txt
+    
+    # # thanks to who ever created this https://computingforgeeks.com/how-to-install-kubernetes-dashboard-with-nodeport/
+    # - name: Change dashboard service type to nodeport
+    #   command:
+    #     cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard -p '{"spec"{{ ":" }} {"type"{{ ":" }} "NodePort"}}'
+
+    # - name: Change port to use 31000
+    #   shell:
+    #     cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard --patch "$(cat {{ manifest_dir }}nodeport_snippet.yml)"
