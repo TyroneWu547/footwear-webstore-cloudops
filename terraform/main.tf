@@ -124,7 +124,9 @@ resource "aws_instance" "control_node" {
 
 # EC2 Instance: worker nodes
 resource "aws_instance" "worker_nodes" {
-    ami = var.worker_nodes_ec2.ami_type
+    count = length(var.worker_nodes_ec2.ami_loc_types)
+
+    ami = var.worker_nodes_ec2.ami_loc_types[count.index].ami_type
     instance_type = var.worker_nodes_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ 
@@ -132,11 +134,9 @@ resource "aws_instance" "worker_nodes" {
         aws_security_group.nodeport_access.id 
     ]
 
-    count = var.worker_nodes_ec2.instance_count
-
     tags = {
-        Name = "worker_node_${count.index}"
-        Description = "Kubernetes worker node ${count.index}"
+        Name = "worker_node_${count.index}_${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
+        Description = "Kubernetes worker node ${count.index} in ${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
     }
 }
 
