@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# Private Key-pair
+# -----------------------------------------------------------------------------
+
 # Generate SSH key pair
 resource "tls_private_key" "ssh_key_gen" {
     algorithm = "RSA"
@@ -16,6 +20,10 @@ resource "aws_key_pair" "ssh_key_pair" {
     key_name = var.key_name
     public_key = tls_private_key.ssh_key_gen.public_key_openssh
 }
+
+# -----------------------------------------------------------------------------
+# AWS Security Groups
+# -----------------------------------------------------------------------------
 
 # Security rules to allow SSH access to and internet traffic from
 resource "aws_security_group" "ssh_internet_access" {
@@ -90,6 +98,38 @@ resource "aws_security_group" "nodeport_access" {
     }
 }
 
+# Allow worker node to join master node
+resource "aws_security_group" "microk8s_cluster_agent" {
+    name = "microk8s-cluster-agent"
+    description = "Allow worker node to join master node"
+
+    ingress {
+        description = "Inbound rule for control node where worker node joins."
+        from_port = 25000
+        to_port = 25000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+# Allow worker node to join master node
+resource "aws_security_group" "microk8s_api_server" {
+    name = "microk8s-api-server"
+    description = "Pod network connection for microk8s"
+
+    ingress {
+        description = "Inbound rule for microk8s api-server."
+        from_port = 16443
+        to_port = 16443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+# -----------------------------------------------------------------------------
+# AWS EC2 Instances
+# -----------------------------------------------------------------------------
+
 # EC2 Instance: database server
 resource "aws_instance" "database_server" {
     ami = var.db_ec2.ami_type
@@ -113,7 +153,9 @@ resource "aws_instance" "control_node" {
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ 
         aws_security_group.ssh_internet_access.id,
-        aws_security_group.nodeport_access.id
+        aws_security_group.nodeport_access.id,
+        aws_security_group.microk8s_cluster_agent.id,
+        aws_security_group.microk8s_api_server.id
     ]
 
     tags = {
@@ -125,13 +167,14 @@ resource "aws_instance" "control_node" {
 # EC2 Instance: worker nodes
 resource "aws_instance" "worker_nodes" {
     count = length(var.worker_nodes_ec2.ami_loc_types)
+    # provider = "aws.${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
 
     ami = var.worker_nodes_ec2.ami_loc_types[count.index].ami_type
     instance_type = var.worker_nodes_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
-    vpc_security_group_ids = [ 
+    vpc_security_group_ids = [
         aws_security_group.ssh_internet_access.id,
-        aws_security_group.nodeport_access.id 
+        aws_security_group.microk8s_api_server.id
     ]
 
     tags = {
@@ -139,6 +182,10 @@ resource "aws_instance" "worker_nodes" {
         Description = "Kubernetes worker node ${count.index} in ${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
     }
 }
+
+# -----------------------------------------------------------------------------
+# Ansible inventory file
+# -----------------------------------------------------------------------------
 
 # Generate inventory file for Ansible of the cluster
 resource "local_file" "kube_cluster_hosts" {
