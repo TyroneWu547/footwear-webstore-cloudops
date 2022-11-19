@@ -1,0 +1,26 @@
+---
+- name: Enable dashboard addon for kubernetes
+  command:
+    cmd: "microk8s enable dashboard"
+
+- name: Register kubernetes dashboard token to variable
+  command: 
+    cmd: "microk8s kubectl create token default"
+  register: dashboard_token
+  changed_when: false
+
+- name: Write dashboard token to local file
+  local_action:
+    module: copy
+    content: "{{ dashboard_token.stdout }}"
+    dest: /home/host/vault/dashboard_token.txt
+    force: yes
+
+# thanks https://computingforgeeks.com/how-to-install-kubernetes-dashboard-with-nodeport/
+- name: Change dashboard service type to nodeport
+  command:
+    cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard -p '{"spec"{{ ":" }} {"type"{{ ":" }} "NodePort"}}'
+
+- name: Change port to use 31000
+  shell:
+    cmd: microk8s kubectl -n kube-system patch svc kubernetes-dashboard --patch "$(cat {{ manifest_dir }}nodeport_snippet.yml)"
