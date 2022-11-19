@@ -1,6 +1,6 @@
 ---
-- name: MySQL Setup Playbook
-  import_playbook: ./footwear-db/database-setup.yml
+- name: Database Playbook
+  import_playbook: ./footwear-db/database-playbook.yml
 
-- name: Kubernetes Cluster Playbook
-  import_playbook: ./footwear-web/kube-deployment.yml
+- name: Web Playbook
+  import_playbook: ./footwear-web/web-playbook.yml

@@ -3,7 +3,7 @@
   hosts: database_server
   gather_facts: false
   vars_files:
-    - database-vars.yml
+    - vars.yml
 
   tasks:
     - name: Update apt

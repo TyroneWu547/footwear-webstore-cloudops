@@ -122,20 +122,23 @@ resource "aws_instance" "control_node" {
     }
 }
 
-# # EC2 Instance: worker nodes
-# resource "aws_instance" "worker_nodes" {
-#     ami = var.worker_nodes_ec2.ami_type
-#     instance_type = var.worker_nodes_ec2.instance_type
-#     key_name = aws_key_pair.ssh_key_pair.key_name
-#     vpc_security_group_ids = [ aws_security_group.ssh_internet_access.id ]
+# EC2 Instance: worker nodes
+resource "aws_instance" "worker_nodes" {
+    ami = var.worker_nodes_ec2.ami_type
+    instance_type = var.worker_nodes_ec2.instance_type
+    key_name = aws_key_pair.ssh_key_pair.key_name
+    vpc_security_group_ids = [ 
+        aws_security_group.ssh_internet_access.id,
+        aws_security_group.nodeport_access.id 
+    ]
 
-#     count = var.worker_nodes_ec2.instance_count
+    count = var.worker_nodes_ec2.instance_count
 
-#     tags = {
-#         Name = "worker_node"
-#         Description = "Kubernetes worker nodes"
-#     }
-# }
+    tags = {
+        Name = "worker_node_${count.index}"
+        Description = "Kubernetes worker node ${count.index}"
+    }
+}
 
 # Generate inventory file for Ansible of the cluster
 resource "local_file" "kube_cluster_hosts" {
@@ -145,8 +148,8 @@ resource "local_file" "kube_cluster_hosts" {
         {
             database_server_ip = aws_instance.database_server.public_ip,
             control_node_ip = aws_instance.control_node.public_ip,
-            # worker_nodes_ip = aws_instance.control_node.*.public_ip
-            worker_nodes_ip = []
+            worker_nodes_ip = aws_instance.worker_nodes.*.public_ip
+            # worker_nodes_ip = []
         }
     )
 }
