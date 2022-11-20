@@ -1,0 +1,62 @@
+---
+# -----------------------------------------------------------------------------
+# Setup microk8s
+# -----------------------------------------------------------------------------
+
+- name: Setup microk8s
+  hosts: multinode_cluster
+  gather_facts: false
+  tasks:
+    - name: Install microk8s and prereqs
+      import_tasks: microk8s-setup-tasks.yml
+
+
+# -----------------------------------------------------------------------------
+# Join Workers nodes to Master node
+# -----------------------------------------------------------------------------
+
+- name: Generate microk8s Join Token
+  hosts: control_node
+  gather_facts: false
+  tasks:
+    - name: Generate command token to add node
+      command:
+        cmd: "microk8s add-node --token-ttl 600"
+      register: command_output
+    
+    - name: Filter output for only the join command
+      set_fact:
+        join_command: "{{ command_output.stdout | regex_search('.*microk8s.*--worker.*') }}"
+    
+    # - name: print test
+    #   debug:
+    #     var: join_command
+
+- name: Join Woker nodes to master
+  hosts: worker_nodes
+  gather_facts: false
+  tasks:
+    - name: Join woker node to master
+      command:
+        cmd: "{{ hostvars[groups['control_node'][0]]['join_command'] }}"
+  
+    - name: Wait few sec for workers to be ready (~ 5 sec? idk)
+      pause:
+        seconds: 5
+
+
+# -----------------------------------------------------------------------------
+# Deploy Footwear Manifests and Enable Dashboard
+# -----------------------------------------------------------------------------
+
+- name: Deploy Footwear and Enable Dashboard
+  hosts: control_node
+  gather_facts: false
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Create manifests
+      import_tasks: manifests-tasks.yml
+
+    - name: Enable dashboard
+      import_tasks: dashboard-tasks.yml

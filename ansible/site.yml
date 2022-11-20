@@ -3,4 +3,4 @@
   import_playbook: ./footwear-db/database-playbook.yml
 
 - name: Web Playbook
-  import_playbook: ./footwear-web/web-playbook.yml
+  import_playbook: ./footwear-microk8s/microk8s-playbook.yml
