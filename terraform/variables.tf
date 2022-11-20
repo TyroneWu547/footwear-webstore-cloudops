@@ -49,7 +49,7 @@ variable "worker_nodes_ec2" {
     })
 
     default = {
-        instance_type = "t2.small"
+        instance_type = "t2.medium"
         ami_loc_types = [
             {
                 ami_type = "ami-072d6c9fae3253f26"
