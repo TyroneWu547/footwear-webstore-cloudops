@@ -113,14 +113,22 @@ resource "aws_security_group" "microk8s_cluster_agent" {
 }
 
 # Allow worker node to join master node
-resource "aws_security_group" "microk8s_api_server" {
-    name = "microk8s-api-server"
+resource "aws_security_group" "microk8s_node_network" {
+    name = "microk8s-node-network"
     description = "Pod network connection for microk8s"
 
     ingress {
         description = "Inbound rule for microk8s api-server."
         from_port = 16443
         to_port = 16443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "Inbound rule for microk8s kube-proxy metrics server."
+        from_port = 10249
+        to_port = 10249
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
@@ -155,7 +163,7 @@ resource "aws_instance" "control_node" {
         aws_security_group.ssh_internet_access.id,
         aws_security_group.nodeport_access.id,
         aws_security_group.microk8s_cluster_agent.id,
-        aws_security_group.microk8s_api_server.id
+        aws_security_group.microk8s_node_network.id
     ]
 
     tags = {
@@ -174,7 +182,7 @@ resource "aws_instance" "worker_nodes" {
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [
         aws_security_group.ssh_internet_access.id,
-        aws_security_group.microk8s_api_server.id
+        aws_security_group.microk8s_node_network.id
     ]
 
     tags = {
