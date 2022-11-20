@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# Private Key-pair
+# -----------------------------------------------------------------------------
+
 # Name of the key-pair to generate
 variable "key_name" {
     type = string
@@ -6,7 +10,9 @@ variable "key_name" {
     description = "key-pair filename"
 }
 
-# https://cloud-images.ubuntu.com/locator/ec2/      <~ locate ami
+# -----------------------------------------------------------------------------
+# AWS EC2 Instances
+# -----------------------------------------------------------------------------
 
 variable "db_ec2" {
     type = object({
@@ -16,7 +22,7 @@ variable "db_ec2" {
     })
 
     default = {
-        ami_type = "ami-072d6c9fae3253f26"
+        ami_type = "${data.aws_ami.ubuntu.id}"
         instance_type = "t3.medium"
         location = "us-east-1"
     }
@@ -31,7 +37,7 @@ variable "control_node_ec2" {
     })
 
     default = {
-        ami_type = "ami-072d6c9fae3253f26"
+        ami_type = "${data.aws_ami.ubuntu.id}"
         instance_type = "t3.medium"
         location = "us-east-1"
     }
@@ -52,11 +58,11 @@ variable "worker_nodes_ec2" {
         instance_type = "t2.medium"
         ami_loc_types = [
             {
-                ami_type = "ami-072d6c9fae3253f26"
+                ami_type = "${data.aws_ami.ubuntu.id}"
                 location = "us-east-1"
             },
             {
-                ami_type = "ami-072d6c9fae3253f26"
+                ami_type = "${data.aws_ami.ubuntu.id}"
                 location = "us-east-1"
             }
         ]
