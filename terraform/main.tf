@@ -22,6 +22,19 @@ resource "aws_key_pair" "ssh_key_pair" {
 }
 
 # -----------------------------------------------------------------------------
+# AWS VPC
+# -----------------------------------------------------------------------------
+
+# # VPC for Footwear app
+# resource "aws_vpc" "footwear_vpc" {
+
+
+#     tags = {
+#         Name = ""
+#     }
+# }
+
+# -----------------------------------------------------------------------------
 # AWS Security Groups
 # -----------------------------------------------------------------------------
 
@@ -60,6 +73,10 @@ resource "aws_security_group" "ssh_internet_access" {
     #     protocol = "tcp"
     #     cidr_blocks = ["0.0.0.0/0"]
     # }
+
+    tags = {
+        Name = "ssh-internet-access"
+    }
 }
 
 # Allow access to MySQL database
@@ -73,6 +90,10 @@ resource "aws_security_group" "mysql_access" {
         to_port = 3306
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "mysql-access"
     }
 }
 
@@ -96,6 +117,10 @@ resource "aws_security_group" "nodeport_access" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    tags = {
+        Name = "nodeport-access"
+    }
 }
 
 # Allow worker node to join master node
@@ -109,6 +134,10 @@ resource "aws_security_group" "microk8s_cluster_agent" {
         to_port = 25000
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "microk8s-cluster-agent"
     }
 }
 
@@ -131,6 +160,10 @@ resource "aws_security_group" "microk8s_node_network" {
         to_port = 10249
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "microk8s-node-network"
     }
 }
 
