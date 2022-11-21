@@ -30,7 +30,11 @@ footwear-webstore-cloudops/
    +- .env                      <~ over here
 ```
 
-**Note:** If your are using your AWS Academy Learner Lab Account, make sure to use those credentials instead to make use of the free credits.  
+**Note:** If your are using your AWS Academy Learner Lab Account, make sure that the lab is running (green ball) before outputting the AWS credentials.  
+
+<p align="center">
+<img width="450" src="https://github.com/TyroneWu547/footwear-webstore-cloudops/blob/main/docs/aws_academy_lab.png">
+</p>
 
 -----
 
