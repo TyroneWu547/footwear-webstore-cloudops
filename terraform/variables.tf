@@ -16,13 +16,13 @@ variable "key_name" {
 
 variable "db_ec2" {
     type = object({
-        ami_type = string
+        # ami_type = string
         instance_type = string
         location = string
     })
 
     default = {
-        ami_type = "${data.aws_ami.ubuntu.id}"
+        # ami_type = "${data.aws_ami.ubuntu.id}"
         instance_type = "t3.medium"
         location = "us-east-1"
     }
@@ -31,13 +31,13 @@ variable "db_ec2" {
 
 variable "control_node_ec2" {
     type = object({
-        ami_type = string
+        # ami_type = string
         instance_type = string
         location = string
     })
 
     default = {
-        ami_type = "${data.aws_ami.ubuntu.id}"
+        # ami_type = "${data.aws_ami.ubuntu.id}"
         instance_type = "t3.medium"
         location = "us-east-1"
     }
@@ -49,7 +49,7 @@ variable "worker_nodes_ec2" {
     type = object({
         instance_type = string
         ami_loc_types = list(object({
-            ami_type = string
+            # ami_type = string
             location = string
         }))
     })
@@ -58,11 +58,11 @@ variable "worker_nodes_ec2" {
         instance_type = "t2.medium"
         ami_loc_types = [
             {
-                ami_type = "${data.aws_ami.ubuntu.id}"
+                # ami_type = "${data.aws_ami.ubuntu.id}"
                 location = "us-east-1"
             },
             {
-                ami_type = "${data.aws_ami.ubuntu.id}"
+                # ami_type = "${data.aws_ami.ubuntu.id}"
                 location = "us-east-1"
             }
         ]

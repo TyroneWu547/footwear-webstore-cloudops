@@ -123,31 +123,13 @@ resource "aws_security_group" "nodeport_access" {
     }
 }
 
-# Allow worker node to join master node
-resource "aws_security_group" "microk8s_cluster_agent" {
-    name = "microk8s-cluster-agent"
-    description = "Allow worker node to join master node"
-
-    ingress {
-        description = "Inbound rule for control node where worker node joins."
-        from_port = 25000
-        to_port = 25000
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    tags = {
-        Name = "microk8s-cluster-agent"
-    }
-}
-
-# Allow worker node to join master node
+# Ports used for microk8s https://microk8s.io/docs/services-and-ports
 resource "aws_security_group" "microk8s_node_network" {
     name = "microk8s-node-network"
-    description = "Pod network connection for microk8s"
+    description = "Ports used for node connection in microk8s"
 
     ingress {
-        description = "Inbound rule for microk8s api-server."
+        description = "microk8s api-server"
         from_port = 16443
         to_port = 16443
         protocol = "tcp"
@@ -155,10 +137,66 @@ resource "aws_security_group" "microk8s_node_network" {
     }
 
     ingress {
-        description = "Inbound rule for microk8s kube-proxy metrics server."
-        from_port = 10249
-        to_port = 10249
+        description = "microk8s kubelet"
+        from_port = 10250
+        to_port = 10250
         protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s kubelet"
+        from_port = 10255
+        to_port = 10255
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s cluster-agent"
+        from_port = 25000
+        to_port = 25000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s etcd"
+        from_port = 12379
+        to_port = 12379
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s kube-controller"
+        from_port = 10257
+        to_port = 10257
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s kube-scheduler"
+        from_port = 10259
+        to_port = 10259
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s dqlite"
+        from_port = 19001
+        to_port = 19001
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "microk8s calico"
+        from_port = 4789
+        to_port = 4789
+        protocol = "udp"
         cidr_blocks = ["0.0.0.0/0"]
     }
 
@@ -173,7 +211,7 @@ resource "aws_security_group" "microk8s_node_network" {
 
 # EC2 Instance: database server
 resource "aws_instance" "database_server" {
-    ami = var.db_ec2.ami_type
+    ami = data.aws_ami.ubuntu.id
     instance_type = var.db_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ 
@@ -189,13 +227,12 @@ resource "aws_instance" "database_server" {
 
 # EC2 Instance: control node
 resource "aws_instance" "control_node" {
-    ami = var.control_node_ec2.ami_type
+    ami = data.aws_ami.ubuntu.id
     instance_type = var.control_node_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [ 
         aws_security_group.ssh_internet_access.id,
         aws_security_group.nodeport_access.id,
-        aws_security_group.microk8s_cluster_agent.id,
         aws_security_group.microk8s_node_network.id
     ]
 
@@ -210,7 +247,7 @@ resource "aws_instance" "worker_nodes" {
     count = length(var.worker_nodes_ec2.ami_loc_types)
     # provider = "aws.${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
 
-    ami = var.worker_nodes_ec2.ami_loc_types[count.index].ami_type
+    ami = data.aws_ami.ubuntu.id
     instance_type = var.worker_nodes_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
     vpc_security_group_ids = [
