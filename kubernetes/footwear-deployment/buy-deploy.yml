@@ -6,7 +6,7 @@ metadata:
     name: buy-deploy
     app: footwear-webstore-app
 spec:
-  replicas: 3
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
