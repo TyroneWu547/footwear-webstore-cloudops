@@ -32,11 +32,11 @@
     #   debug:
     #     var: join_command
 
-- name: Join Woker nodes to master
+- name: Join Worker nodes to master
   hosts: worker_nodes
   gather_facts: false
   tasks:
-    - name: Join woker node to master
+    - name: Join worker node to master
       command:
         cmd: "{{ hostvars[groups['control_node'][0]]['join_command'] }}"
   

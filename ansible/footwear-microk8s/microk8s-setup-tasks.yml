@@ -2,11 +2,6 @@
 - name: Update apt
   apt:
     update_cache: yes
-
-- name: Install docker
-  apt:
-    name: docker.io
-    state: present
     
 - name: Install microk8s
   snap:
@@ -14,12 +9,11 @@
     state: present
     classic: yes
 
-- name: Add user to docker and microk8s group
+- name: Add user to microk8s group for debugging
   user:
     name: ubuntu
     state: present
     groups:
-      - docker
       - microk8s
 
 - name: Wait for microk8s to be ready
