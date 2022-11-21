@@ -59,9 +59,15 @@
          backup: yes
       notify:
          - Restart mysql
+         - Wait for mysql port
 
   handlers:
     - name: Restart mysql
       service:
         name: mysql
         state: restarted
+    
+    - name: Wait for mysql port
+      wait_for:
+        port: 3306
+        state: started
