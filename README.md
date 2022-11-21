@@ -4,12 +4,10 @@
 
 ## 🚧 Prerequisites  
 
-Ensure Git is installed to clone repo...  
-
-Ensure Docker is installed to create configuration environment...  
-
-Ensure AWS account is created to create AWS resources...  
-
+Before you begin, ensure you have all of the following:  
+- [Docker](https://docs.docker.com/get-docker/)
+- AWS Account
+  
 Create `.env` file at top level of repo with your AWS credentials. This information can be found in `~/.aws/config` for the region, and `~/.aws/credentials` for the rest.  
 
 Contents of `.env`:  
@@ -72,7 +70,7 @@ $ ansible-playbook site.yml
 
 -----  
 
-## 📋 Accessing the Webapplication & Dashboard  
+## 📋 Accessing the Webapp & Dashboard  
 
 The web application should now be reachable through:  
 ```bash
