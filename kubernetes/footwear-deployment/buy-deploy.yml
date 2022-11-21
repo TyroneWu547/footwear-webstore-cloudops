@@ -6,7 +6,7 @@ metadata:
     name: buy-deploy
     app: footwear-webstore-app
 spec:
-  replicas: 2
+  replicas: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -62,8 +62,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: buy-deploy
-  minReplicas: 2
-  maxReplicas: 5
+  minReplicas: 3
+  maxReplicas: 10
   metrics:
   - type: Resource
     resource:
