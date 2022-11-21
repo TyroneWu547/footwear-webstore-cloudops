@@ -7,6 +7,10 @@
 Before you begin, ensure you have all of the following:  
 - [Docker](https://docs.docker.com/get-docker/)
 - AWS Account
+
+**Note:** The instances will utilizing `t3.medium`s, which will cost a couple cents from your AWS account. When finished, make sure to run the **Cleanup** section to delete the resources that been created.  
+
+---  
   
 Create `.env` file at top level of repo with your AWS credentials. This information can be found in `~/.aws/config` for the region, and `~/.aws/credentials` for the rest.  
 
@@ -25,6 +29,8 @@ footwear-webstore-cloudops/
    +- ...
    +- .env                      <~ over here
 ```
+
+**Note:** If your are using your AWS Academy Learner Lab Account, make sure to use those credentials instead to make use of the free credits.  
 
 -----
 
