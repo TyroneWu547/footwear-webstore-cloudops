@@ -25,14 +25,12 @@ resource "aws_key_pair" "ssh_key_pair" {
 # AWS VPC
 # -----------------------------------------------------------------------------
 
-# # VPC for Footwear app
-# resource "aws_vpc" "footwear_vpc" {
-
-
-#     tags = {
-#         Name = ""
-#     }
-# }
+# VPC for Footwear app
+resource "aws_default_vpc" "main" {
+    tags = {
+        Name = "main"
+    }
+}
 
 # -----------------------------------------------------------------------------
 # AWS Security Groups
@@ -42,6 +40,7 @@ resource "aws_key_pair" "ssh_key_pair" {
 resource "aws_security_group" "ssh_internet_access" {
     name = "ssh-internet-access"
     description = "Basic in/out rules for EC2 instances"
+    vpc_id = aws_default_vpc.main.id
 
     ingress {
         description = "Inbound rule for SSH"
@@ -59,41 +58,8 @@ resource "aws_security_group" "ssh_internet_access" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 
-    # egress {
-    #     description = "Outbound rule for HTTP"
-    #     from_port = 80
-    #     to_port = 80
-    #     protocol = "tcp"
-    #     cidr_blocks = ["0.0.0.0/0"]
-    # }
-    # egress {
-    #     description = "Outbound rule for HTTPS"
-    #     from_port = 443
-    #     to_port = 443
-    #     protocol = "tcp"
-    #     cidr_blocks = ["0.0.0.0/0"]
-    # }
-
     tags = {
         Name = "ssh-internet-access"
-    }
-}
-
-# Allow access to MySQL database
-resource "aws_security_group" "mysql_access" {
-    name = "mysql-access"
-    description = "Open access to mysql database"
-
-    ingress {
-        description = "Inbound rule for mysql"
-        from_port = 3306
-        to_port = 3306
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    tags = {
-        Name = "mysql-access"
     }
 }
 
@@ -101,21 +67,17 @@ resource "aws_security_group" "mysql_access" {
 resource "aws_security_group" "nodeport_access" {
     name = "nodeport-access"
     description = "Open access to NodePort services"
+    vpc_id = aws_default_vpc.main.id
 
-    ingress {
-        description = "Inbound rule for the Route microservice"
-        from_port = 30000
-        to_port = 30000
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "Inbound rule for the microk8s dashboard"
-        from_port = 31000
-        to_port = 31000
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
+    dynamic "ingress" {
+        for_each = var.nodeport_ports
+        content {
+            description = ingress.value.description
+            from_port = ingress.value.port
+            to_port = ingress.value.port
+            protocol = "tcp"
+            cidr_blocks = ["0.0.0.0/0"]
+        }
     }
 
     tags = {
@@ -127,81 +89,51 @@ resource "aws_security_group" "nodeport_access" {
 resource "aws_security_group" "microk8s_node_network" {
     name = "microk8s-node-network"
     description = "Ports used for node connection in microk8s"
+    vpc_id = aws_default_vpc.main.id
 
-    ingress {
-        description = "microk8s api-server"
-        from_port = 16443
-        to_port = 16443
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
+    dynamic "ingress" {
+        for_each = var.microk8s_node_network_ports
+        content {
+            description = "Inbound ${ingress.value.description}"
+            from_port = ingress.value.port
+            to_port = ingress.value.port
+            protocol = ingress.value.protocol
+            self = true
+        }
     }
 
-    ingress {
-        description = "microk8s kubelet"
-        from_port = 10250
-        to_port = 10250
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s kubelet"
-        from_port = 10255
-        to_port = 10255
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s cluster-agent"
-        from_port = 25000
-        to_port = 25000
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s etcd"
-        from_port = 12379
-        to_port = 12379
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s kube-controller"
-        from_port = 10257
-        to_port = 10257
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s kube-scheduler"
-        from_port = 10259
-        to_port = 10259
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s dqlite"
-        from_port = 19001
-        to_port = 19001
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
-        description = "microk8s calico"
-        from_port = 4789
-        to_port = 4789
-        protocol = "udp"
-        cidr_blocks = ["0.0.0.0/0"]
+    dynamic "egress" {
+        for_each = var.microk8s_node_network_ports
+        content {
+            description = "Outbound ${egress.value.description}"
+            from_port = egress.value.port
+            to_port = egress.value.port
+            protocol = egress.value.protocol
+            self = true
+        }
     }
 
     tags = {
         Name = "microk8s-node-network"
+    }
+}
+
+# Allow access to MySQL database
+resource "aws_security_group" "mysql_access" {
+    name = "mysql-access"
+    description = "Open access to mysql database"
+    vpc_id = aws_default_vpc.main.id
+
+    ingress {
+        description = "Inbound rule for mysql"
+        from_port = 3306
+        to_port = 3306
+        protocol = "tcp"
+        security_groups = ["${aws_security_group.microk8s_node_network.id}"]
+    }
+
+    tags = {
+        Name = "mysql-access"
     }
 }
 
@@ -230,7 +162,7 @@ resource "aws_instance" "control_node" {
     ami = data.aws_ami.ubuntu.id
     instance_type = var.control_node_ec2.instance_type
     key_name = aws_key_pair.ssh_key_pair.key_name
-    vpc_security_group_ids = [ 
+    vpc_security_group_ids = [
         aws_security_group.ssh_internet_access.id,
         aws_security_group.nodeport_access.id,
         aws_security_group.microk8s_node_network.id
@@ -256,8 +188,8 @@ resource "aws_instance" "worker_nodes" {
     ]
 
     tags = {
-        Name = "worker_node_${count.index}_${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
-        Description = "Kubernetes worker node ${count.index} in ${var.worker_nodes_ec2.ami_loc_types[count.index].location}"
+        Name = "worker_node_${count.index}"
+        Description = "Kubernetes worker node ${count.index}"
     }
 }
 
@@ -274,7 +206,6 @@ resource "local_file" "kube_cluster_hosts" {
             database_server_ip = aws_instance.database_server.public_ip,
             control_node_ip = aws_instance.control_node.public_ip,
             worker_nodes_ip = aws_instance.worker_nodes.*.public_ip
-            # worker_nodes_ip = []
         }
     )
 }
