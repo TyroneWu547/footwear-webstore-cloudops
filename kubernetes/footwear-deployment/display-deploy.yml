@@ -47,12 +47,11 @@ spec:
   selector:
     name: display-pod
     app: footwear-webstore-app
-  type: NodePort
+  type: ClusterIP
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
-    nodePort: 30002
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

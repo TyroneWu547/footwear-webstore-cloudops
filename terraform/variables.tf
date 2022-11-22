@@ -25,14 +25,14 @@ variable "nodeport_ports" {
             description = "Inbound for Route microservice", 
             port = 30000 
         },
-        { 
-            description = "Inbound for Buy microservice", 
-            port = 30001 
-        },
-        { 
-            description = "Inbound for Display microservice", 
-            port = 30002 
-        },
+        # { 
+        #     description = "Inbound for Buy microservice", 
+        #     port = 30001 
+        # },
+        # { 
+        #     description = "Inbound for Display microservice", 
+        #     port = 30002 
+        # },
         { 
             description = "Inbound for microk8s dashboard", 
             port = 31000 
