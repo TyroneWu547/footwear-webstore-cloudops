@@ -17,7 +17,7 @@ metadata:
   name: external-mariadb-service
 subsets:
 - addresses:
-  - ip: "{{ groups['database_server'][0] }}"
+  - ip: "{{ db_private_ip.stdout }}"
   ports:
   - port: 3306
     name: mariadb

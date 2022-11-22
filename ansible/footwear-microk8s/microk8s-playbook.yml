@@ -27,6 +27,7 @@
     - name: Filter output for only the join command
       set_fact:
         join_command: "{{ command_output.stdout | regex_search('.*microk8s.*--worker.*') }}"
+      changed_when: false
     
     # - name: print test
     #   debug:

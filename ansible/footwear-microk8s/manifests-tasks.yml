@@ -14,6 +14,13 @@
     mode: 0775
   loop: "{{ manifests_to_copy }}"
 
+- name: Get private IP of db server
+  local_action:
+    module: command
+    cmd: "terraform -chdir=/home/host/terraform output -raw  database_server_private_ip"
+  register: db_private_ip
+  changed_when: false
+
 - name: Copy template file for DB external service definition
   template:
     src: /home/host/kubernetes/footwear-deployment/{{ db_manifest.template }}
