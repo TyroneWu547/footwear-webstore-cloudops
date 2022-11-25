@@ -73,7 +73,7 @@ variable "db_ec2" {
 
     default = {
         # ami_type = "${data.aws_ami.ubuntu.id}"
-        instance_type = "t3.medium"
+        instance_type = "t2.large"
         location = "us-east-1"
     }
     description = "EC2 instance type for DB server"
@@ -88,7 +88,7 @@ variable "control_node_ec2" {
 
     default = {
         # ami_type = "${data.aws_ami.ubuntu.id}"
-        instance_type = "t3.medium"
+        instance_type = "t2.medium"
         location = "us-east-1"
     }
     description = "EC2 instance type for control node"
