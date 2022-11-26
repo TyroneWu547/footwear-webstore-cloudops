@@ -5,7 +5,7 @@
 
 - name: Register kubernetes dashboard token to variable
   command: 
-    cmd: "microk8s kubectl create token default"
+    cmd: "microk8s kubectl create token default --duration=24h"
   register: dashboard_token
   changed_when: false
 
