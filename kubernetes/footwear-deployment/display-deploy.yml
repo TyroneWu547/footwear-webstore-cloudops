@@ -31,10 +31,10 @@ spec:
           - containerPort: 80
         resources:
           requests:
-            cpu: "125m"
-            memory: "256Mi"
+            cpu: "75m"
+            memory: "158Mi"
           limits:
-            memory: "256Mi"
+            memory: "158Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -47,11 +47,13 @@ spec:
   selector:
     name: display-pod
     app: footwear-webstore-app
-  type: ClusterIP
+  # type: ClusterIP
+  type: NodePort
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
+    nodePort: 30002
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -63,17 +65,17 @@ spec:
     kind: Deployment
     name: display-deploy
   minReplicas: 3
-  maxReplicas: 10
+  maxReplicas: 20
   metrics:
   - type: Resource
     resource:
       name: memory
       target:
         type: AverageValue
-        averageValue: 179Mi
+        averageValue: 95Mi
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 60
