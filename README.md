@@ -1,4 +1,12 @@
-# 👟 Footwear Webstore CloudOps  
+# ☁️ Footwear Webstore CloudOps  
+
+This cloudops project automates the build and deployment for a provided webapp microservice, called the Footwear Webstore, which creates a self-managed Kubernetes cluster using [microk8s](https://microk8s.io/).  
+
+<p align="center">
+<img src="https://github.com/TyroneWu547/footwear-webstore-cloudops/blob/main/docs/kube_cluster_diagram.png">
+</p>
+
+**Note:** The Service definitions for Display and Buy uses `NodePort` instead of `ClusterIP` since Locust.io requires direct access to those microservices. In production, these should normally use `ClusterIP`.  
 
 -----
 
@@ -18,7 +26,7 @@ Contents of `.env`:
 ```
 AWS_ACCESS_KEY_ID=<your-aws-access-key>
 AWS_SECRET_ACCESS_KEY=<your-aws-secret-access-key>
-AWS_SESSION_TOKEN=<your-aws-session-token>
+AWS_SESSION_TOKEN=<your-aws-session-token>            # <~ if applicable
 AWS_DEFAULT_REGION=<your-aws-region>
 AWS_DEFAULT_OUTPUT=json
 ```
@@ -45,7 +53,7 @@ First create your configuration environment:
 # Build image
 $ docker build -t footwear-config-srv .
 
-## Run container
+# Create container
 $ docker run --name footwear-config-srv -it -d -p 22:22 -p 8089:8089 -v "$(pwd):/home/host" --env-file .env footwear-config-srv
 
 # Start terminal session in container
@@ -105,14 +113,19 @@ footwear-webstore-cloudops/
 <img width="450" src="https://github.com/TyroneWu547/footwear-webstore-cloudops/blob/main/docs/dashboard_login.png">
 </p>
 
+---  
+
 For Locust.io:  
 ```bash
 # Run locust
 $ locust -f /home/host/locust/locustfile.py
-
-# The UI can be accessed through `localhost:8089`
-# To exit, hit: ctrl + c
 ```
+The UI can be accessed through [http://localhost:8089/](http://localhost:8089/)  
+To exit, hit: ctrl + c  
+
+**Note:** The Host field should only contain `http://<IP>`, with no forward slash at the end.  
+
+---  
 
 To SSH into an EC2 instance, run the following command:  
 ```bash
@@ -121,6 +134,15 @@ $ ssh -i /home/host/vault/ec2-ssh-key.pem ubuntu@$(terraform -chdir=/home/host/t
 
 # SSH into the db server
 $ ssh -i /home/host/vault/ec2-ssh-key.pem ubuntu@$(terraform -chdir=/home/host/terraform output -raw database_server_ip)
+```
+
+The public IPs of the instances can be found in:  
+```
+footwear-webstore-cloudops/
+   +- ...
+   +- ansible/
+   |   +- inventory/
+   |   |   +- inventory
 ```
 
 -----  
