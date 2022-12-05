@@ -123,7 +123,7 @@ $ locust -f /home/host/locust/locustfile.py
 The UI can be accessed through [http://localhost:8089/](http://localhost:8089/)  
 To exit, hit: ctrl + c  
 
-**Note:** The Host field should only contain `http://<IP>`, with no forward slash at the end.  
+**Note:** The Host field should only contain `http://<IP>`, with no forward slash or port at the end.  
 
 ---  
 
